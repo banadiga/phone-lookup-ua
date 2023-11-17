@@ -1,9 +1,17 @@
 <?php
+set_include_path('/var/www/');
+
+if (!array_key_exists("phone", $_GET)) {
+    header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+    exit;
+}
 
 require "vendor/autoload.php";
 require "classes/PhoneLookUp.php";
 
-$phone_number = "0800300466";
+header('Content-Type: application/json; charset=utf-8');
+setlocale(LC_ALL, "en_US.UTF-8");
 
-$look_obj = new PhoneLookUp($phone_number);
-print_r($look_obj->lookup());
+$phone = htmlspecialchars($_GET["phone"]);
+$data = new PhoneLookUp($phone);
+echo json_encode($data->lookup(), JSON_UNESCAPED_UNICODE);

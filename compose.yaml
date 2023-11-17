@@ -1,0 +1,13 @@
+services:
+  web:
+    image: banadiga/phone-lookup-ua:0.1.0
+    restart: unless-stopped
+    environment:
+      - USER=2000|phonelookupua
+    ports:
+      - "80:80"
+    networks:
+      - webserver
+networks:
+  webserver:
+    driver: bridge

@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+if [ "$USER" ]; then
+  USERID=$(echo $USER | cut -d'|' -f1)
+  APACHE_RUN_USER=$(echo $USER | cut -d'|' -f2)
+  APACHE_RUN_GROUP=${APACHE_RUN_USER}
+
+  echo "Create user ${USERID}:${APACHE_RUN_USER}:${APACHE_RUN_GROUP}"
+
+  getent group $APACHE_RUN_GROUP || addgroup --system --force --force-badname --gid $USERID $APACHE_RUN_GROUP
+  id -u $APACHE_RUN_USER &>/dev/null || adduser --system --force-badname --shell /sbin/nologin --disabled-login --no-create-home --gid $USERID --uid $USERID $APACHE_RUN_USER 
+fi
+
+APACHE_RUN_USER=$APACHE_RUN_USER APACHE_RUN_GROUP=$APACHE_RUN_GROUP exec apache2-foreground
